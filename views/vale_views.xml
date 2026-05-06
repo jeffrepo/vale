@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_vale_vale_list" model="ir.ui.view">
+        <field name="name">vale.vale.list</field>
+        <field name="model">vale.vale</field>
+        <field name="arch" type="xml">
+            <list string="Vales">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="amount"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="user_id"/>
+                <field name="state" widget="badge"/>
+                <field name="invoice_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_vale_vale_search" model="ir.ui.view">
+        <field name="name">vale.vale.search</field>
+        <field name="model">vale.vale</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Vales">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="invoice_id"/>
+                <filter string="Borrador" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmado" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Facturado" name="invoiced" domain="[('state','=','invoiced')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Estado" name="group_state" context="{'group_by':'state'}"/>
+                    <filter string="Socio" name="group_partner" context="{'group_by':'partner_id'}"/>
+                    <filter string="Fecha" name="group_date" context="{'group_by':'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_vale_vale_form" model="ir.ui.view">
+        <field name="name">vale.vale.form</field>
+        <field name="model">vale.vale</field>
+        <field name="arch" type="xml">
+            <form string="Vale">
+                <header>
+                    <button name="action_confirm"
+                            type="object"
+                            string="Confirmar"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_create_invoice"
+                            type="object"
+                            string="Generar Factura"
+                            class="btn-primary"
+                            invisible="state != 'confirmed'"/>
+
+                    <button name="action_reset_to_draft"
+                            type="object"
+                            string="Regresar a Borrador"
+                            invisible="state != 'confirmed'"/>
+
+                    <button name="%(action_report_vale_vale)d"
+                            type="action"
+                            string="Imprimir Vale"
+                            invisible="state == 'draft'"/>
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,confirmed,invoiced"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o"
+                                invisible="not invoice_id">
+                            <field name="invoice_count" widget="statinfo" string="Factura"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="user_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                            <field name="invoice_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Nota">
+                            <field name="note" placeholder="Comentario o detalle del vale..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_vale_vale" model="ir.actions.act_window">
+        <field name="name">Vales</field>
+        <field name="res_model">vale.vale</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_vale_vale_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cree su primer vale.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vale_root"
+              name="Vale"
+              sequence="10"/>
+
+    <menuitem id="menu_vale_vale"
+              name="Vales"
+              parent="menu_vale_root"
+              action="action_vale_vale"
+              sequence="10"/>
+</odoo>

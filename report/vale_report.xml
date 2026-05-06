@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_vale_vale" model="ir.actions.report">
+        <field name="name">Vale</field>
+        <field name="model">vale.vale</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vale.report_vale_vale_document</field>
+        <field name="report_file">vale.report_vale_vale_document</field>
+        <field name="binding_model_id" ref="model_vale_vale"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Vale - %s' % object.name</field>
+    </record>
+
+    <template id="report_vale_vale_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center">
+                            <h2>Vale</h2>
+                            <h3>
+                                <span t-field="o.name"/>
+                            </h3>
+                        </div>
+
+                        <br/>
+
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Fecha</strong></td>
+                                    <td><span t-field="o.date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Socio</strong></td>
+                                    <td><span t-field="o.partner_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Monto</strong></td>
+                                    <td>
+                                        <span t-field="o.amount"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Usuario creación</strong></td>
+                                    <td><span t-field="o.user_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado</strong></td>
+                                    <td><span t-field="o.state"/></td>
+                                </tr>
+                                <tr t-if="o.invoice_id">
+                                    <td><strong>Factura</strong></td>
+                                    <td><span t-field="o.invoice_id"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div t-if="o.note">
+                            <strong>Nota:</strong>
+                            <p t-field="o.note"/>
+                        </div>
+
+                        <br/><br/><br/>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>______________________________</p>
+                                <p><strong>Entregado por</strong></p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>______________________________</p>
+                                <p><strong>Recibido por</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
