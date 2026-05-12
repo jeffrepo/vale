@@ -176,6 +176,7 @@ class Vale(models.Model):
                 "move_type": "out_invoice",
                 "partner_id": record.partner_id.id,
                 "invoice_date": record.date,
+                "fecha_estado_cuenta": record.date,
                 "journal_id": journal.id,
                 "company_id": record.company_id.id,
                 "invoice_origin": record.name,
