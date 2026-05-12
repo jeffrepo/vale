@@ -10,6 +10,7 @@
         <field name="binding_type">report</field>
         <field name="print_report_name">'Vale - %s' % object.name</field>
     </record>
+
     <template id="report_vale_vale_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
@@ -30,7 +31,7 @@
                                 </tr>
                                 <tr><td><strong>Usuario creación</strong></td><td><span t-field="o.user_id"/></td></tr>
                                 <tr><td><strong>Estado</strong></td><td><span t-field="o.state"/></td></tr>
-                                <tr t-if="o.invoice_id"><td><strong>Factura</strong></td><td><span t-field="o.invoice_id"/></td></tr>
+                                <tr t-if="o.invoice_id"><td><strong>Estado de cuenta</strong></td><td><span t-field="o.invoice_id"/></td></tr>
                             </tbody>
                         </table>
                         <div t-if="o.note">

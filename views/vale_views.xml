@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="server_action_generate_statement" model="ir.actions.server">
+        <field name="name">Generar estado de cuenta</field>
+        <field name="model_id" ref="model_vale_vale"/>
+        <field name="binding_model_id" ref="model_vale_vale"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_generate_statement()</field>
+    </record>
+
     <record id="view_vale_vale_list" model="ir.ui.view">
         <field name="name">vale.vale.list</field>
         <field name="model">vale.vale</field>
@@ -12,10 +21,11 @@
                 <field name="currency_id" column_invisible="1"/>
                 <field name="user_id"/>
                 <field name="state" widget="badge"/>
-                <field name="invoice_id"/>
+                <field name="invoice_id" string="Estado de cuenta"/>
             </list>
         </field>
     </record>
+
     <record id="view_vale_vale_search" model="ir.ui.view">
         <field name="name">vale.vale.search</field>
         <field name="model">vale.vale</field>
@@ -27,7 +37,8 @@
                 <field name="invoice_id"/>
                 <filter string="Borrador" name="draft" domain="[('state','=','draft')]"/>
                 <filter string="Confirmado" name="confirmed" domain="[('state','=','confirmed')]"/>
-                <filter string="Facturado" name="invoiced" domain="[('state','=','invoiced')]"/>
+                <filter string="Estado de cuenta" name="statement" domain="[('state','=','statement')]"/>
+                <filter string="Anulado" name="cancelled" domain="[('state','=','cancelled')]"/>
                 <group expand="0" string="Agrupar por">
                     <filter string="Estado" name="group_state" context="{'group_by':'state'}"/>
                     <filter string="Socio" name="group_partner" context="{'group_by':'partner_id'}"/>
@@ -36,6 +47,7 @@
             </search>
         </field>
     </record>
+
     <record id="view_vale_vale_form" model="ir.ui.view">
         <field name="name">vale.vale.form</field>
         <field name="model">vale.vale</field>
@@ -43,15 +55,15 @@
             <form string="Vale">
                 <header>
                     <button name="action_confirm" type="object" string="Confirmar" class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_create_invoice" type="object" string="Generar Factura" class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" type="object" string="Anulado" invisible="state not in ('draft', 'confirmed')"/>
                     <button name="action_reset_to_draft" type="object" string="Regresar a Borrador" invisible="state != 'confirmed'"/>
                     <button name="%(vale.action_report_vale_vale)d" type="action" string="Imprimir Vale" invisible="state == 'draft'"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,invoiced"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,statement,cancelled"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not invoice_id">
-                            <field name="invoice_count" widget="statinfo" string="Factura"/>
+                            <field name="invoice_count" widget="statinfo" string="Estado de cuenta"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -68,7 +80,7 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="amount" readonly="state != 'draft'"/>
-                            <field name="invoice_id" readonly="1"/>
+                            <field name="invoice_id" string="Estado de cuenta" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -80,6 +92,7 @@
             </form>
         </field>
     </record>
+
     <record id="action_vale_vale" model="ir.actions.act_window">
         <field name="name">Vales</field>
         <field name="res_model">vale.vale</field>
@@ -89,6 +102,7 @@
             <p class="o_view_nocontent_smiling_face">Cree su primer vale.</p>
         </field>
     </record>
+
     <menuitem id="menu_vale_root" name="Vale" sequence="10"/>
     <menuitem id="menu_vale_vale" name="Vales" parent="menu_vale_root" action="action_vale_vale" sequence="10"/>
 </odoo>

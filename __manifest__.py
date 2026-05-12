@@ -1,9 +1,9 @@
 {
     "name": "Vale",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.0",
     "category": "Accounting",
     "summary": "Gestión de vales por monto",
-    "description": "Aplicación para crear, confirmar, facturar e imprimir vales por monto.",
+    "description": "Aplicación para crear, confirmar, anular, generar estado de cuenta e imprimir vales por monto.",
     "author": "Jefferson Silva",
     "depends": ["base", "account", "product"],
     "data": [
